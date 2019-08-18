@@ -1,0 +1,60 @@
+@import "variables.less";
+
+@note-padding: 0.5rem;
+
+.note {
+  margin-bottom: 1rem;
+
+  &__add {
+    display: inline-block;
+  }
+
+  &__preview {
+    display: block;
+  }
+
+  &__edit {
+    display: none;
+  }
+
+  &--editable {
+    .note__add,
+    .note__preview {
+      display: none;
+    }
+
+    .note__edit {
+      display: block;
+    }
+  }
+
+  &__preview {
+    background-color:@white;
+    padding: @note-padding;
+  }
+
+  &__date {
+    display: block;
+    margin-top: 0.5rem;
+    color: @medium-gray;
+  }
+}
+
+.note-form {
+  &__textarea {
+    resize: none;
+    width: 100%;
+    padding: @note-padding;
+    box-sizing: border-box;
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__cancel {
+    margin-left: auto;
+    margin-right: 0.5rem;
+  }
+}

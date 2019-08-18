@@ -1,0 +1,79 @@
+/* Basic styles not related to this widget */
+
+input {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+a {
+  color: @blue;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:visited {
+    color: @blue;
+  }
+}
+
+.btn {
+  padding: 0.5rem 2rem;
+  border-radius: 3px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.btn-variant(@background, @color, @border) {
+  background-color: @background;
+  color: @color;
+  border: 1px solid @border;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.btn-default, a.btn-default {
+  .btn-variant(transparent, @black, @black)
+}
+
+.btn-primary, a.btn-primary {
+  .btn-variant(@blue, @white, @blue)
+}
+
+.btn-small {
+  padding: 0.25rem 0.5rem;
+}
+
+.btn-block {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-icon {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  &:hover {
+    color: @medium-gray;
+    svg {
+      fill: @medium-gray;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+@import (less) "../../node_modules/normalize.css/normalize.css";
+@import "variables.less";
+@import "base.less";
+@import "side-panel.less";
+@import "login.less";
+@import "note.less";
+
+body {
+  background-color: @gray;
+  font-family: sans-serif;
+  font-size: 0.875em;
+  line-height: 1.25rem;
+  color: @black;
+}
+
+.dashboard {
+  width: 100%;
+  height: 100vh;
+  background-image: url('../img/dashboard-light.png');
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
