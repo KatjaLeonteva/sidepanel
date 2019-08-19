@@ -18,9 +18,9 @@ export default class NoteCreate extends Component{
     }
 
     get template() {
-        return `<div class="note ${this.isActive ? `note--editable` : ``}">
-                        <a class="note__add" href="#">Add note...</a>
-                        <div class="note__edit">
+        return `<div class="note-create ${this.isActive ? `note-create--editable` : ``}">
+                        <a class="note-create__add" href="#">Add note...</a>
+                        <div class="note-create__edit">
                             <form action="" class="note-form">
                                 <textarea class="note-form__textarea" name="" id="" cols="30" rows="5" required></textarea>
                                 <div class="note-form__controls">
@@ -37,27 +37,27 @@ export default class NoteCreate extends Component{
     }
 
     bind() {
-        this.element.querySelector(`.note__add`).addEventListener(`click`, this._onAddButtonClick);
+        this.element.querySelector(`.note-create__add`).addEventListener(`click`, this._onAddButtonClick);
         this.element.querySelector(`.note-form__cancel`).addEventListener(`click`, this._onCancelButtonClick);
         this.element.querySelector(`.note-form__save`).addEventListener(`click`, this._onSaveButtonClick);
     }
 
     unbind() {
-        this.element.querySelector(`.add`).removeEventListener(`click`, this._onAddButtonClick);
+        this.element.querySelector(`.note-create__add`).removeEventListener(`click`, this._onAddButtonClick);
         this.element.querySelector(`.note-form__cancel`).removeEventListener(`click`, this._onCancelButtonClick);
         this.element.querySelector(`.note-form__save`).removeEventListener(`click`, this._onSaveButtonClick);
     }
 
     activate() {
         this.isActive = true;
-        this.element.classList.add(`note--editable`);
+        this.element.classList.add(`note-create--editable`);
         this.element.querySelector(`.note-form__textarea`).focus();
     }
 
     deactivate() {
         this.isActive = false;
         this.element.querySelector(`.note-form`).reset();
-        this.element.classList.remove(`note--editable`);
+        this.element.classList.remove(`note-create--editable`);
     }
 
     _onAddButtonClick(evt) {

@@ -493,16 +493,12 @@ a.btn-primary:hover {
 .note {
   margin-bottom: 1rem;
 }
-.note__add {
-  display: inline-block;
-}
 .note__preview {
   display: block;
 }
 .note__edit {
   display: none;
 }
-.note--editable .note__add,
 .note--editable .note__preview {
   display: none;
 }
@@ -517,6 +513,21 @@ a.btn-primary:hover {
   display: block;
   margin-top: 0.5rem;
   color: #868486;
+}
+.note-create {
+  margin-bottom: 1rem;
+}
+.note-create__add {
+  display: inline-block;
+}
+.note-create__edit {
+  display: none;
+}
+.note-create--editable .note-create__add {
+  display: none;
+}
+.note-create--editable .note-create__edit {
+  display: block;
 }
 .note-form__textarea {
   resize: none;

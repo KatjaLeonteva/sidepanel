@@ -18,6 +18,7 @@ export default class Notes extends Component {
 
         this._onGoBack = null;
 
+        this._onDocumentClick = this._onDocumentClick.bind(this);
         this._onBackClick = this._onBackClick.bind(this);
         this._onSearch = debounce(this._onSearch.bind(this), 500);
 
@@ -53,12 +54,16 @@ export default class Notes extends Component {
     }
 
     bind() {
+        document.addEventListener(`click`, this._onDocumentClick);
+
         this.element.querySelector(`.sidepanel__back`).addEventListener(`click`, this._onBackClick);
         this.element.querySelector(`.search__input`).addEventListener(`search`, this._onSearch);
         this.element.querySelector(`.search__input`).addEventListener(`keyup`, this._onSearch);
     }
 
     unbind() {
+        document.removeEventListener(`click`, this._onDocumentClick);
+
         this.element.querySelector(`.sidepanel__back`).removeEventListener(`click`, this._onBackClick);
         this.element.querySelector(`.search__input`).removeEventListener(`search`, this._onSearch);
         this.element.querySelector(`.search__input`).addEventListener(`keyup`, this._onSearch);
@@ -66,6 +71,20 @@ export default class Notes extends Component {
 
     _onBackClick() {
         typeof this._onGoBack === `function` && this._onGoBack();
+    }
+
+    _onDocumentClick(evt) {
+        const clickedNoteElem = evt.target.closest(`.note`);
+
+        if (!clickedNoteElem) {
+            // If clicked outside, deactivate all
+            this.notes.filter((note) => note.isActive).map((note) => note.deactivate());
+
+        } else if (clickedNoteElem && !clickedNoteElem.classList.contains(`note--editable`)) {
+            // If clicked inside non-active note, deactivate all and activate clicked
+            this.notes.filter((note) => note.isActive).map((note) => note.deactivate());
+            this.notes.filter((note) => note.data.id === +clickedNoteElem.dataset[`id`]).map((note) => note.activate());
+        }
     }
 
     _onSearch(evt) {

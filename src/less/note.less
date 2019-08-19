@@ -5,10 +5,6 @@
 .note {
   margin-bottom: 1rem;
 
-  &__add {
-    display: inline-block;
-  }
-
   &__preview {
     display: block;
   }
@@ -18,7 +14,6 @@
   }
 
   &--editable {
-    .note__add,
     .note__preview {
       display: none;
     }
@@ -37,6 +32,28 @@
     display: block;
     margin-top: 0.5rem;
     color: @medium-gray;
+  }
+}
+
+.note-create {
+  margin-bottom: 1rem;
+
+  &__add {
+    display: inline-block;
+  }
+
+  &__edit {
+    display: none;
+  }
+
+  &--editable {
+    .note-create__add {
+      display: none;
+    }
+
+    .note-create__edit {
+      display: block;
+    }
   }
 }
 

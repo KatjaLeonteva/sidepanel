@@ -14,14 +14,13 @@ export default class Note extends Component{
         this._onDelete = null;
         this._onSave = null;
 
-        this._onElementClick = this._onElementClick.bind(this);
         this._onCancelButtonClick = this._onCancelButtonClick.bind(this);
         this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
         this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
     }
 
     get template() {
-        return `<div class="note ${this.isActive ? `note--editable` : ``}" id="note-${this.data.id}">
+        return `<div class="note ${this.isActive ? `note--editable` : ``}" data-id="${this.data.id}">
                     <div class="note__preview">
                         ${this.data.text}
                         <small class="note__date">${this.data.date}</small>
@@ -48,14 +47,12 @@ export default class Note extends Component{
     }
 
     bind() {
-        this.element.addEventListener(`click`, this._onElementClick);
         this.element.querySelector(`.note-form__cancel`).addEventListener(`click`, this._onCancelButtonClick);
         this.element.querySelector(`.note-form__delete`).addEventListener(`click`, this._onDeleteButtonClick);
         this.element.querySelector(`.note-form__save`).addEventListener(`click`, this._onSaveButtonClick);
     }
 
     unbind() {
-        this.element.removeEventListener(`click`, this._onElementClick);
         this.element.querySelector(`.note-form__cancel`).removeEventListener(`click`, this._onCancelButtonClick);
         this.element.querySelector(`.note-form__delete`).removeEventListener(`click`, this._onDeleteButtonClick);
         this.element.querySelector(`.note-form__save`).removeEventListener(`click`, this._onSaveButtonClick);
@@ -80,12 +77,6 @@ export default class Note extends Component{
         this.isActive = false;
 
         this.element.parentElement.replaceChild(this.render(), placeholder);
-    }
-
-    _onElementClick(evt) {
-        if (!this.isActive) {
-            this.activate();
-        }
     }
 
     _onCancelButtonClick(evt) {
