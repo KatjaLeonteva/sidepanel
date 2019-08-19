@@ -104,14 +104,13 @@
             this._onDelete = null;
             this._onSave = null;
 
-            this._onElementClick = this._onElementClick.bind(this);
             this._onCancelButtonClick = this._onCancelButtonClick.bind(this);
             this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
             this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
         }
 
         get template() {
-            return `<div class="note ${this.isActive ? `note--editable` : ``}" id="note-${this.data.id}">
+            return `<div class="note ${this.isActive ? `note--editable` : ``}" data-id="${this.data.id}">
                     <div class="note__preview">
                         ${this.data.text}
                         <small class="note__date">${this.data.date}</small>
@@ -138,14 +137,12 @@
         }
 
         bind() {
-            this.element.addEventListener(`click`, this._onElementClick);
             this.element.querySelector(`.note-form__cancel`).addEventListener(`click`, this._onCancelButtonClick);
             this.element.querySelector(`.note-form__delete`).addEventListener(`click`, this._onDeleteButtonClick);
             this.element.querySelector(`.note-form__save`).addEventListener(`click`, this._onSaveButtonClick);
         }
 
         unbind() {
-            this.element.removeEventListener(`click`, this._onElementClick);
             this.element.querySelector(`.note-form__cancel`).removeEventListener(`click`, this._onCancelButtonClick);
             this.element.querySelector(`.note-form__delete`).removeEventListener(`click`, this._onDeleteButtonClick);
             this.element.querySelector(`.note-form__save`).removeEventListener(`click`, this._onSaveButtonClick);
@@ -170,12 +167,6 @@
             this.isActive = false;
 
             this.element.parentElement.replaceChild(this.render(), placeholder);
-        }
-
-        _onElementClick(evt) {
-            if (!this.isActive) {
-                this.activate();
-            }
         }
 
         _onCancelButtonClick(evt) {
@@ -225,9 +216,9 @@
         }
 
         get template() {
-            return `<div class="note ${this.isActive ? `note--editable` : ``}">
-                        <a class="note__add" href="#">Add note...</a>
-                        <div class="note__edit">
+            return `<div class="note-create ${this.isActive ? `note-create--editable` : ``}">
+                        <a class="note-create__add" href="#">Add note...</a>
+                        <div class="note-create__edit">
                             <form action="" class="note-form">
                                 <textarea class="note-form__textarea" name="" id="" cols="30" rows="5" required></textarea>
                                 <div class="note-form__controls">
@@ -244,27 +235,27 @@
         }
 
         bind() {
-            this.element.querySelector(`.note__add`).addEventListener(`click`, this._onAddButtonClick);
+            this.element.querySelector(`.note-create__add`).addEventListener(`click`, this._onAddButtonClick);
             this.element.querySelector(`.note-form__cancel`).addEventListener(`click`, this._onCancelButtonClick);
             this.element.querySelector(`.note-form__save`).addEventListener(`click`, this._onSaveButtonClick);
         }
 
         unbind() {
-            this.element.querySelector(`.add`).removeEventListener(`click`, this._onAddButtonClick);
+            this.element.querySelector(`.note-create__add`).removeEventListener(`click`, this._onAddButtonClick);
             this.element.querySelector(`.note-form__cancel`).removeEventListener(`click`, this._onCancelButtonClick);
             this.element.querySelector(`.note-form__save`).removeEventListener(`click`, this._onSaveButtonClick);
         }
 
         activate() {
             this.isActive = true;
-            this.element.classList.add(`note--editable`);
+            this.element.classList.add(`note-create--editable`);
             this.element.querySelector(`.note-form__textarea`).focus();
         }
 
         deactivate() {
             this.isActive = false;
             this.element.querySelector(`.note-form`).reset();
-            this.element.classList.remove(`note--editable`);
+            this.element.classList.remove(`note-create--editable`);
         }
 
         _onAddButtonClick(evt) {
@@ -425,6 +416,7 @@
 
             this._onGoBack = null;
 
+            this._onDocumentClick = this._onDocumentClick.bind(this);
             this._onBackClick = this._onBackClick.bind(this);
             this._onSearch = debounce(this._onSearch.bind(this), 500);
 
@@ -460,12 +452,16 @@
         }
 
         bind() {
+            document.addEventListener(`click`, this._onDocumentClick);
+
             this.element.querySelector(`.sidepanel__back`).addEventListener(`click`, this._onBackClick);
             this.element.querySelector(`.search__input`).addEventListener(`search`, this._onSearch);
             this.element.querySelector(`.search__input`).addEventListener(`keyup`, this._onSearch);
         }
 
         unbind() {
+            document.removeEventListener(`click`, this._onDocumentClick);
+
             this.element.querySelector(`.sidepanel__back`).removeEventListener(`click`, this._onBackClick);
             this.element.querySelector(`.search__input`).removeEventListener(`search`, this._onSearch);
             this.element.querySelector(`.search__input`).addEventListener(`keyup`, this._onSearch);
@@ -473,6 +469,20 @@
 
         _onBackClick() {
             typeof this._onGoBack === `function` && this._onGoBack();
+        }
+
+        _onDocumentClick(evt) {
+            const clickedNoteElem = evt.target.closest(`.note`);
+
+            if (!clickedNoteElem) {
+                // If clicked outside, deactivate all
+                this.notes.filter((note) => note.isActive).map((note) => note.deactivate());
+
+            } else if (clickedNoteElem && !clickedNoteElem.classList.contains(`note--editable`)) {
+                // If clicked inside non-active note, deactivate all and activate clicked
+                this.notes.filter((note) => note.isActive).map((note) => note.deactivate());
+                this.notes.filter((note) => note.data.id === +clickedNoteElem.dataset[`id`]).map((note) => note.activate());
+            }
         }
 
         _onSearch(evt) {
