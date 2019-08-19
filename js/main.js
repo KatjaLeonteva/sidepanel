@@ -91,6 +91,38 @@
     }
 
     /**
+     * Clear child nodes
+     * @param {HTMLElement} container.
+     */
+    const cleanNode = (container) => {
+        while (container.firstChild) {
+            container.firstChild.remove();
+        }
+    };
+
+    /**
+     * Debouncing (wait before running function)
+     * @param {function} callback.
+     * @param {number} wait Wait time in ms
+     * @return {function}
+     */
+    const debounce = (callback, wait) => {
+        let timeout;
+        return (...args) => {
+            const context = undefined;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => callback.apply(context, args), wait);
+        };
+    };
+
+    const toggleForm = (form, disabled = false) => {
+        const elements = form.elements;
+        for (let i = 0, n = elements.length; i < n; ++i) {
+            elements[i].disabled = disabled;
+        }
+    };
+
+    /**
      * @fileoverview Component to work with a single note
      */
 
@@ -158,6 +190,14 @@
             this.isActive = false;
             this.element.classList.remove(`note--editable`);
             this.element.querySelector(`.note-form__textarea`).blur();
+        }
+
+        disable() {
+            toggleForm(this.element.querySelector(`.note-form`), true);
+        }
+
+        enable() {
+            toggleForm(this.element.querySelector(`.note-form`), false);
         }
 
         update(newData) {
@@ -257,6 +297,15 @@
             this.element.querySelector(`.note-form`).reset();
             this.element.classList.remove(`note-create--editable`);
         }
+
+        disable() {
+            toggleForm(this.element.querySelector(`.note-form`), true);
+        }
+
+        enable() {
+            toggleForm(this.element.querySelector(`.note-form`), false);
+        }
+
 
         _onAddButtonClick(evt) {
             evt.preventDefault();
@@ -379,31 +428,6 @@
     }
 
     /**
-     * Clear child nodes
-     * @param {HTMLElement} container.
-     */
-    const cleanNode = (container) => {
-        while (container.firstChild) {
-            container.firstChild.remove();
-        }
-    };
-
-    /**
-     * Debouncing (wait before running function)
-     * @param {function} callback.
-     * @param {number} wait Wait time in ms
-     * @return {function}
-     */
-    const debounce = (callback, wait) => {
-        let timeout;
-        return (...args) => {
-            const context = undefined;
-            clearTimeout(timeout);
-            timeout = setTimeout(() => callback.apply(context, args), wait);
-        };
-    };
-
-    /**
      * @fileoverview Component to display and manipulate notes for a Customer
      */
 
@@ -501,12 +525,15 @@
             const noteForm = new NoteCreate();
 
             noteForm.onCreate = (text) => {
-                Loader.addData(this.customerId, text).then((noteData) => {
-                    const note = new Note(noteData);
-                    this._renderNote(note, this.element.querySelector(`.notes`));
-                    this.notes.push(note);
-                    noteForm.deactivate();
-                });
+                noteForm.disable();
+                Loader.addData(this.customerId, text)
+                    .then((noteData) => {
+                        const note = new Note(noteData);
+                        this._renderNote(note, this.element.querySelector(`.notes`));
+                        this.notes.push(note);
+                        noteForm.deactivate();
+                    })
+                    .catch(() => noteForm.enable());
 
             };
 
@@ -525,17 +552,22 @@
         }
 
         _renderNote(note, container) {
+
             note.onSave = (editedNote) => {
-                Loader.saveData(editedNote).then((savedNote) => {
-                    note.update(savedNote);
-                });
+                note.disable();
+                Loader.saveData(editedNote)
+                    .then((savedNote) => note.update(savedNote))
+                    .catch(() => note.enable());
             };
 
             note.onDelete = (nodeId) => {
-                Loader.deleteData(nodeId).then(() => {
-                    note.unrender();
-                    this.notes = this.notes.filter((note) => note.data.id !== nodeId);
-                });
+                note.disable();
+                Loader.deleteData(nodeId)
+                    .then(() => {
+                        note.unrender();
+                        this.notes = this.notes.filter((note) => note.data.id !== nodeId);
+                    })
+                    .catch(() => note.enable());
             };
 
             container.insertBefore(note.element, container.firstChild);
