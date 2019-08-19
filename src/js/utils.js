@@ -22,3 +22,10 @@ export const debounce = (callback, wait) => {
         timeout = setTimeout(() => callback.apply(context, args), wait);
     };
 };
+
+export const toggleForm = (form, disabled = false) => {
+    const elements = form.elements;
+    for (let i = 0, n = elements.length; i < n; ++i) {
+        elements[i].disabled = disabled;
+    }
+};

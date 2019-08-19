@@ -31,26 +31,27 @@ a {
   }
 
   &:disabled {
-    cursor: not-allowed;
+    cursor: default;
   }
 }
 
-.btn-variant(@background, @color, @border) {
+.btn-variant(@background, @hover, @color, @border) {
   background-color: @background;
   color: @color;
   border: 1px solid @border;
 
-  &:hover {
-    opacity: 0.8;
+  &:hover,
+  &:disabled {
+    background-color: @hover;
   }
 }
 
 .btn-default, a.btn-default {
-  .btn-variant(transparent, @black, @black)
+  .btn-variant(transparent, @white, @black, @black)
 }
 
 .btn-primary, a.btn-primary {
-  .btn-variant(@blue, @white, @blue)
+  .btn-variant(@blue, fade(@blue, 90%), @white, @blue)
 }
 
 .btn-small {

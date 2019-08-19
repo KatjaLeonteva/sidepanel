@@ -103,12 +103,15 @@ export default class Notes extends Component {
         const noteForm = new NoteCreate();
 
         noteForm.onCreate = (text) => {
-            Loader.addData(this.customerId, text).then((noteData) => {
-                const note = new Note(noteData);
-                this._renderNote(note, this.element.querySelector(`.notes`));
-                this.notes.push(note);
-                noteForm.deactivate();
-            });
+            noteForm.disable();
+            Loader.addData(this.customerId, text)
+                .then((noteData) => {
+                    const note = new Note(noteData);
+                    this._renderNote(note, this.element.querySelector(`.notes`));
+                    this.notes.push(note);
+                    noteForm.deactivate();
+                })
+                .catch(() => noteForm.enable());
 
         };
 
@@ -127,17 +130,22 @@ export default class Notes extends Component {
     }
 
     _renderNote(note, container) {
+
         note.onSave = (editedNote) => {
-            Loader.saveData(editedNote).then((savedNote) => {
-                note.update(savedNote);
-            });
+            note.disable();
+            Loader.saveData(editedNote)
+                .then((savedNote) => note.update(savedNote))
+                .catch(() => note.enable());
         };
 
         note.onDelete = (nodeId) => {
-            Loader.deleteData(nodeId).then(() => {
-                note.unrender();
-                this.notes = this.notes.filter((note) => note.data.id !== nodeId);
-            });
+            note.disable();
+            Loader.deleteData(nodeId)
+                .then(() => {
+                    note.unrender();
+                    this.notes = this.notes.filter((note) => note.data.id !== nodeId);
+                })
+                .catch(() => note.enable());
         };
 
         container.insertBefore(note.element, container.firstChild);

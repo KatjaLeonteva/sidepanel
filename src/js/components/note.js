@@ -3,6 +3,7 @@
  */
 
 import Component from "./component";
+import {toggleForm} from "../utils";
 
 export default class Note extends Component{
     constructor(noteData) {
@@ -68,6 +69,14 @@ export default class Note extends Component{
         this.isActive = false;
         this.element.classList.remove(`note--editable`);
         this.element.querySelector(`.note-form__textarea`).blur();
+    }
+
+    disable() {
+        toggleForm(this.element.querySelector(`.note-form`), true);
+    }
+
+    enable() {
+        toggleForm(this.element.querySelector(`.note-form`), false);
     }
 
     update(newData) {

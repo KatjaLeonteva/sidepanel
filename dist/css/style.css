@@ -334,7 +334,7 @@ a:visited {
   text-decoration: none;
 }
 .btn:disabled {
-  cursor: not-allowed;
+  cursor: default;
 }
 .btn-default,
 a.btn-default {
@@ -343,8 +343,10 @@ a.btn-default {
   border: 1px solid #181818;
 }
 .btn-default:hover,
-a.btn-default:hover {
-  opacity: 0.8;
+a.btn-default:hover,
+.btn-default:disabled,
+a.btn-default:disabled {
+  background-color: #FFFFFF;
 }
 .btn-primary,
 a.btn-primary {
@@ -353,8 +355,10 @@ a.btn-primary {
   border: 1px solid #0082F0;
 }
 .btn-primary:hover,
-a.btn-primary:hover {
-  opacity: 0.8;
+a.btn-primary:hover,
+.btn-primary:disabled,
+a.btn-primary:disabled {
+  background-color: rgba(0, 130, 240, 0.9);
 }
 .btn-small {
   padding: 0.25rem 0.5rem;

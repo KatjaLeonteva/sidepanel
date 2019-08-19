@@ -3,6 +3,7 @@
  */
 
 import Component from "./component";
+import {toggleForm} from "../utils";
 
 export default class NoteCreate extends Component{
     constructor() {
@@ -59,6 +60,15 @@ export default class NoteCreate extends Component{
         this.element.querySelector(`.note-form`).reset();
         this.element.classList.remove(`note-create--editable`);
     }
+
+    disable() {
+        toggleForm(this.element.querySelector(`.note-form`), true);
+    }
+
+    enable() {
+        toggleForm(this.element.querySelector(`.note-form`), false);
+    }
+
 
     _onAddButtonClick(evt) {
         evt.preventDefault();
