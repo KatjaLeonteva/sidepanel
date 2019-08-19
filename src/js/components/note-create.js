@@ -48,13 +48,13 @@ export default class NoteCreate extends Component{
         this.element.querySelector(`.note-form__save`).removeEventListener(`click`, this._onSaveButtonClick);
     }
 
-    activateForm() {
+    activate() {
         this.isActive = true;
         this.element.classList.add(`note--editable`);
         this.element.querySelector(`.note-form__textarea`).focus();
     }
 
-    deactivateForm() {
+    deactivate() {
         this.isActive = false;
         this.element.querySelector(`.note-form`).reset();
         this.element.classList.remove(`note--editable`);
@@ -62,12 +62,12 @@ export default class NoteCreate extends Component{
 
     _onAddButtonClick(evt) {
         evt.preventDefault();
-        this.activateForm();
+        this.activate();
     }
 
     _onCancelButtonClick(evt) {
         evt.stopPropagation();
-        this.deactivateForm();
+        this.deactivate();
     }
 
     _onSaveButtonClick(evt) {

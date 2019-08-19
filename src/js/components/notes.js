@@ -13,7 +13,7 @@ export default class Notes extends Component {
     constructor(id, data) {
         super();
         this.customerId = id;
-        this.notes = data;
+        this.notes = data.map((noteData) => new Note(noteData));
         this.filteredNotes = [];
 
         this._onGoBack = null;
@@ -71,7 +71,7 @@ export default class Notes extends Component {
     _onSearch(evt) {
         const searchString = evt.target.value;
         if (searchString.length) {
-            this.filteredNotes = this.notes.filter((note) => note.text.indexOf(searchString) !== -1);
+            this.filteredNotes = this.notes.filter((note) => note.data.text.indexOf(searchString) !== -1);
             this._renderNotes(this.filteredNotes);
         } else {
             this.filteredNotes = [];
@@ -85,9 +85,10 @@ export default class Notes extends Component {
 
         noteForm.onCreate = (text) => {
             Loader.addData(this.customerId, text).then((noteData) => {
-                this._renderNote(noteData, this.element.querySelector(`.notes`));
-                noteForm.deactivateForm();
-                this._addData(noteData);
+                const note = new Note(noteData);
+                this._renderNote(note, this.element.querySelector(`.notes`));
+                this.notes.push(note);
+                noteForm.deactivate();
             });
 
         };
@@ -99,43 +100,28 @@ export default class Notes extends Component {
         const container = this.element.querySelector(`.notes`);
         const fragment = document.createDocumentFragment();
 
-        notes.forEach((noteData) => this._renderNote(noteData, fragment));
+        notes.forEach((note) => this._renderNote(note, fragment));
+
 
         cleanNode(container);
         container.appendChild(fragment);
     }
 
-    _renderNote(noteData, container) {
-        const note = new Note(noteData);
-
+    _renderNote(note, container) {
         note.onSave = (editedNote) => {
             Loader.saveData(editedNote).then((savedNote) => {
-                this._updateData(savedNote);
                 note.update(savedNote);
             });
         };
 
         note.onDelete = (nodeId) => {
             Loader.deleteData(nodeId).then(() => {
-                this._deleteData(nodeId);
                 note.unrender();
+                this.notes = this.notes.filter((note) => note.data.id !== nodeId);
             });
         };
 
         container.insertBefore(note.element, container.firstChild);
-    }
-
-    _addData(data) {
-        this.notes.push(data);
-    }
-
-    _updateData(data) {
-        const index = this.notes.findIndex((note) => note.id === data.id);
-        this.notes.splice(index, 1, data);
-    }
-
-    _deleteData(id) {
-        this.notes = this.notes.filter((note) => note.id !== id);
     }
 
 }
