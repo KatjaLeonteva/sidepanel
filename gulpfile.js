@@ -29,7 +29,7 @@ gulp.task(`scripts`, () => {
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(rollup({}, `iife`))
-        .pipe(sourcemaps.write(``))
+        .pipe(sourcemaps.write(`.`))
         .pipe(gulp.dest(`dist/js`))
 });
 

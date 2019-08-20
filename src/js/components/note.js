@@ -23,7 +23,7 @@ export default class Note extends Component{
     get template() {
         return `<div class="note ${this.isActive ? `note--editable` : ``}" data-id="${this.data.id}">
                     <div class="note__preview">
-                        ${this.data.text}
+                        <div class="note__text">${this.data.text}</div>
                         <small class="note__date">${this.data.date}</small>
                     </div>
                     <div class="note__edit">
@@ -97,7 +97,7 @@ export default class Note extends Component{
         evt.preventDefault();
         evt.stopPropagation();
 
-        const storedText = this.element.querySelector(`.note__preview`).textContent;
+        const storedText = this.element.querySelector(`.note__text`).textContent;
         const newText = this.element.querySelector(`.note-form__textarea`).value;
 
         if (newText.length === 0) {
