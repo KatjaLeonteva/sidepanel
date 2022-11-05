@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "del": "^5.0.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-babel": "^8.0.0-beta.2",
     "gulp-better-rollup": "^4.0.1",
